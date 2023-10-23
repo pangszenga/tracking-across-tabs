@@ -47,6 +47,7 @@
     "negotiator": "^0.6.3",
     "object-inspect": "^1.13.1",
     "on-finished": "^2.4.1",
+    "open": "^9.1.0",
     "parseurl": "^1.3.3",
     "path-to-regexp": "^0.1.7",
     "proxy-addr": "^2.0.7",
@@ -67,11 +68,11 @@
     "utils-merge": "^1.0.1",
     "vary": "^1.1.2"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "test",
     "start": "node server.js"
   },
+  "type": "module",
   "author": "szengapang",
   "license": "ISC"
 }
