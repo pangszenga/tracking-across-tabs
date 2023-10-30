@@ -1,3 +1,18 @@
+// Check if a new tab is opened
+var isNewTab = false;
+
+// Listen for the focus event (tab switch)
+window.onfocus = function () {
+  if (localStorage.getItem("isTabActive") === null) {
+    // This is a new tab
+    isNewTab = true;
+    localStorage.setItem("isTabActive", "true");
+  } else {
+    // This is not a new tab
+    isNewTab = false;
+  }
+};
+
 // Function to generate a random tab ID
 function generateTabID() {
   return Math.random().toString(36).substr(2, 10);
@@ -5,12 +20,26 @@ function generateTabID() {
 
 // Function to set the initial values when the page loads
 function initializeValues() {
-  const currentTabID = generateTabID();
+  //   const currentTabID = generateTabID();
+
+  let currentTabID;
+
+  if (isNewTab) {
+    currentTabID = generateTabID();
+  } else {
+    currentTabID = sessionStorage.getItem("tabID");
+  }
+
+  if (!currentTabID) {
+    currentTabID = generateTabID();
+    sessionStorage.setItem("tabID", currentTabID);
+  }
   localStorage.setItem("tabID", currentTabID);
 
   document.getElementById("currentTabID").textContent = currentTabID;
 
   const openedFromID = getQueryParameter("openedFromID");
+  localStorage.setItem(openedFromID, currentTabID);
   document.getElementById("openedFromID").textContent = openedFromID || "N/A";
 
   // Set the localStorageValue based on openedFromID
