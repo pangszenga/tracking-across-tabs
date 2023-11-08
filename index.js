@@ -20,25 +20,29 @@ function generateTabID() {
 
 // Function to set the initial values when the page loads
 function initializeValues() {
-  //   const currentTabID = generateTabID();
-
   let currentTabID;
 
-  if (isNewTab) {
-    currentTabID = generateTabID();
-  } else {
-    currentTabID = sessionStorage.getItem("tabID");
-  }
-
-  if (!currentTabID) {
+  // New tab / dupe - generate new id
+  if (isNewTab || !currentTabID) {
     currentTabID = generateTabID();
     sessionStorage.setItem("tabID", currentTabID);
   }
+
+  // data that will be persisted across tabs
   localStorage.setItem("tabID", currentTabID);
 
   document.getElementById("currentTabID").textContent = currentTabID;
 
-  const openedFromID = getQueryParameter("openedFromID");
+  let openedFromID;
+
+  if (isNewTab) {
+    // new tab
+    openedFromID = sessionStorage.getItem("tabID");
+  } else {
+    // open in a new tab / middle click
+    openedFromID = getQueryParameter("openedFromID");
+  }
+
   localStorage.setItem(openedFromID, currentTabID);
   document.getElementById("openedFromID").textContent = openedFromID || "N/A";
 
