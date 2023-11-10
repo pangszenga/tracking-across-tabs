@@ -1,4 +1,3 @@
-// Check if a new tab is opened
 var isNewTab = false;
 
 // Listen for the focus event (tab switch)
@@ -24,8 +23,17 @@ function initializeValues() {
 
   // New tab / dupe - generate new id
   if (isNewTab || !currentTabID) {
-    currentTabID = generateTabID();
-    sessionStorage.setItem("tabID", currentTabID);
+    // Check if there's an original tab ID in sessionStorage
+    const originalTabID = sessionStorage.getItem("originalTabID");
+
+    if (originalTabID) {
+      // Use the original tab ID if it exists
+      currentTabID = originalTabID;
+    } else {
+      // Generate a new tab ID if there's no original tab ID
+      currentTabID = generateTabID();
+      sessionStorage.setItem("originalTabID", currentTabID);
+    }
   }
 
   // data that will be persisted across tabs
@@ -57,10 +65,13 @@ function getQueryParameter(name) {
   return urlParams.get(name);
 }
 
-// Function to update the "openedFromID" element
-function updateOpenedFromID() {
-  const openedFromID = getQueryParameter("openedFromID") || "N/A";
-  document.getElementById("openedFromID").textContent = openedFromID;
+// Function to handle changes in localStorage
+function handleStorageChange(event) {
+  if (event.key === "tabID") {
+    // Update the currentTabID when it changes in another tab
+    const currentTabID = event.newValue;
+    document.getElementById("currentTabID").textContent = currentTabID;
+  }
 }
 
 // Add event listener to the "Open New Tab" button
@@ -76,3 +87,6 @@ initializeValues();
 
 // Call the function to update the "openedFromID" element when the new tab loads
 updateOpenedFromID();
+
+// Add event listener for changes in localStorage
+window.addEventListener("storage", handleStorageChange);
